@@ -7,11 +7,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
@@ -52,19 +52,26 @@ public class PrincipalController implements Initializable {
 
     public static String Nombre;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         SetNombre();
     }
 
     public void AbrirExtras(MouseEvent mouseEvent) throws IOException {
-        Pane pane = FXMLLoader.load(getClass().getResource("Extras.fxml"));
+        Parent pane = FXMLLoader.load(getClass().getResource("Extras.fxml"));
         this.Content.getChildren().setAll(pane);
+        ((Node) mouseEvent.getSource()).getScene().getWindow().hide();
     }
 
     public void AbrirCaja(MouseEvent mouseEvent) throws IOException {
-        Pane pane = FXMLLoader.load(getClass().getResource("CajaRegistradora.fxml"));
-        this.Content.getChildren().setAll(pane);
+        Stage stage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("CajaRegistradora.fxml"));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.show();
+        ((Node) mouseEvent.getSource()).getScene().getWindow().hide();
     }
 
     public void AbrirInventario(MouseEvent mouseEvent) throws IOException {
