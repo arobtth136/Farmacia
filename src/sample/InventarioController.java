@@ -101,7 +101,7 @@ public class InventarioController implements Initializable {
     public static final ObservableList<ProductoCompra> LProductoCompra = FXCollections.observableArrayList();
 
     private Double Total = 0.0, Aux = 0.0;
-    private int i = 0;
+    private int i = 1;
     private Connection con = Conexion.getConnection();
 
     @Override
@@ -115,6 +115,7 @@ public class InventarioController implements Initializable {
     }
 
     public void InicializarTablaCompra(){
+        Num.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProductoCompra, String> param) -> param.getValue().getValue().sGetNum());
         ID.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProductoCompra, String> param) -> param.getValue().getValue().sGetId());
         Desc.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProductoCompra, String> param) -> param.getValue().getValue().sGetDescripcion());
         Cant.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProductoCompra, String> param) -> param.getValue().getValue().sGetCantidad());
@@ -123,7 +124,6 @@ public class InventarioController implements Initializable {
         Prov.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProductoCompra, String> param) -> param.getValue().getValue().sGetProveedor());
         final TreeItem<ProductoCompra> root = new RecursiveTreeItem<>(LProductoCompra, RecursiveTreeObject::getChildren);
         this.TreeViewCompra.setEditable(true);
-        this.TreeViewCompra.getColumns().setAll(ID, Desc, Cant, Comp, Venta, Prov);
         this.TreeViewCompra.setRoot(root);
         this.TreeViewCompra.setShowRoot(false);
     }
@@ -149,6 +149,7 @@ public class InventarioController implements Initializable {
                     this.Total += Integer.parseInt(TxtCantidad.getText()) * Double.parseDouble(TxtPrecio.getText());
                     this.lblTotal.setText(String.valueOf(this.Total));
                     Aux = Integer.parseInt(TxtCantidad.getText()) * Double.parseDouble(TxtPrecio.getText());
+                    i += 1;
                     return;
                 } else {
                     Alertas.MostrarAlerta("No se encontró este producto o no está registrado", NotificationType.WARNING, "Aviso");
@@ -204,10 +205,6 @@ public class InventarioController implements Initializable {
         this.TxtFiltrar.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             TreeTable.setPredicate((TreeItem<Producto> t) -> {
                 Boolean flag = t.getValue().sGetDesc().getValue().contains(newValue);
-                return flag;
-            });
-            TreeTable.setPredicate((TreeItem<Producto> t) -> {
-                Boolean flag = t.getValue().sGetProveedor().getValue().contains(newValue);
                 return flag;
             });
         });
@@ -357,6 +354,16 @@ public class InventarioController implements Initializable {
                 LProductoCompra.remove(Integer.parseInt(TxtEliminar.getText()) - 1);
             }
         }
+    }
+
+    public void Limpiar(MouseEvent mouseEvent) {
+        i = 0;
+        LProductoCompra.clear();
+        TxtCod.clear();
+        TxtCantidad.clear();
+        TxtPrecio.clear();
+        TxtEliminar.clear();
+        TxtMod.clear();
     }
 
     public class ProductoCompra extends RecursiveTreeObject<ProductoCompra>{
